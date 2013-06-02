@@ -24,7 +24,7 @@ fi
 ########################################
 DIR=`pwd`
 TMPDIR=$DIR
-OUTFILE=$TMPDIR/alg_out.tmp
+OUTFILE=$TMPDIR/_OUTFILE.tmp
 ERRORSFILE=$TMPDIR/errors.txt
 IODIR=$DIR/io #MUST MATCH BETWEEN [CHK GOUT GIN RUN]
 STATDIR=$DIR/stat
@@ -65,8 +65,8 @@ function alg_chk(){
 	while read arr[$i]; do
 		let "i += 1"
 	done < $STATDIR/$1${id#$IODIR}
-	read -r cmps < $DIR/file.txt
-	echo $cmps >> $STATDIR/$1${id#$IODIR}
+	#read -r cmps < $DIR/file.txt
+	#echo $cmps >> $STATDIR/$1${id#$IODIR}
 	min_real=`echo $min_real + ${arr[0]%:*} | bc`
 	sec_real=`echo $sec_real + ${arr[0]#*:} | bc`
 	let "mem_all += arr[1]"
@@ -106,7 +106,6 @@ if [ -z $2 ]; then #tests names not passed
 	fi
 else
 	for io in ${@:2}; do
-		echo $io
 		if [[ ! $TESTS =~ $io  ]]; then echo $io >> $TESTSFILE #adds tests to default list
 		fi
 		for type in $IODIR/$io/*; do

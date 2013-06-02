@@ -28,8 +28,11 @@ fi
 ########################################
 DIR=`pwd`
 STATDIR=$DIR/stat #MUST MATCH WITH CHK
-STATSFILE=$DIR/stats.txt
 TESTFOLDER=$STATDIR/$1/$2
+DATDIR=$DIR/dat
+STATSFILE=$DATDIR/_laststats.txt
+mkdir -p $DATDIR
+DATFILE=$DATDIR/$1_$2.dat
 
 ########################################
 #CREATE DAT FILE
@@ -86,12 +89,12 @@ for type in $TESTFOLDER/*; do
 	if [ -z ${cmps%.*} ]; then cmps=0$cmps;
 	elif [ "$cmps" == "0" ]; then cmps=0.0
 	fi
-	echo "${type#$TESTFOLDER/} `expr match "$cmps" '\([0-9]*...\)'` `expr match "$sec_real" '\([0-9]*...\)'` `expr match "$mem_all" '\([0-9]*...\)'` `expr match "$mem_avg" '\([0-9]*...\)'` `expr match "$sec_usr" '\([0-9]*...\)'` `expr match "$sec_sys" '\([0-9]*...\)'`" >> $STATSFILE
+	echo "${type#$TESTFOLDER/} `expr match "$sec_real" '\([0-9]*...\)'` `expr match "$mem_all" '\([0-9]*...\)'` `expr match "$mem_avg" '\([0-9]*...\)'` `expr match "$sec_usr" '\([0-9]*...\)'` `expr match "$sec_sys" '\([0-9]*...\)'`" >> $STATSFILE
 done
-sort -n $STATSFILE > $1_$2
+sort -n $STATSFILE > $DATFILE
 
 
 ########################################
 #PLOT DAT FILE
 ########################################
-echo "plot \"$1_$2\" using 1:2 title 'STATS' with lines" | gnuplot -persist
+echo "plot \"$DATFILE\" using 1:2 title 'STATS' with lines" | gnuplot -persist
